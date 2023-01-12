@@ -1,7 +1,7 @@
 <div align="center">
 <h1>micro-events ❄️</h1>
 
-<p>Minimal, type friendly events emitter</p>
+<p>Minimal, type friendly event emitter</p>
 </div>
 
 ---

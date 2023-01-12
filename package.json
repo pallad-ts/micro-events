@@ -1,7 +1,7 @@
 {
   "name": "@pallad/micro-events",
   "version": "1.0.0",
-  "description": "",
+  "description": "Minimal, type friendly event emitter",
   "main": "compiled/index.js",
   "types": "compiled/index.d.ts",
   "scripts": {
