@@ -2,12 +2,14 @@ import {Events} from "@src/Events";
 import {assert, IsExact} from "conditional-type-checks";
 import * as sinon from 'sinon';
 
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 type EventsMap = {
 	progress: [number],
 	abort: [],
 	complete: [Record<string, unknown>, number]
-};
+}
 
+const PROGRESS = 100;
 describe('Events', () => {
 	let events: Events<EventsMap>;
 
@@ -23,11 +25,10 @@ describe('Events', () => {
 			events.on('progress', spy1);
 			events.on('progress', spy2);
 
-			const progress = 100;
-			events.emit('progress', 100);
+			events.emit('progress', PROGRESS);
 
-			sinon.assert.calledWith(spy1, progress);
-			sinon.assert.calledWith(spy2, progress);
+			sinon.assert.calledWith(spy1, PROGRESS);
+			sinon.assert.calledWith(spy2, PROGRESS);
 		});
 	});
 
@@ -40,10 +41,9 @@ describe('Events', () => {
 			events.on('progress', spy2);
 			events.off('progress', spy2);
 
-			const progress = 100;
-			events.emit('progress', 100);
+			events.emit('progress', PROGRESS);
 
-			sinon.assert.calledWith(spy1, progress);
+			sinon.assert.calledWith(spy1, PROGRESS);
 			sinon.assert.notCalled(spy2);
 		});
 	});
@@ -56,16 +56,29 @@ describe('Events', () => {
 			events.on('progress', spy1);
 			events.on('progress', spy2);
 
-			const progress = 100;
-			events.emit('progress', 100);
+			events.emit('progress', PROGRESS);
 
 			sinon.assert.callOrder(spy1, spy2);
+		});
+
+		it('ignores event if there are no listeners', () => {
+			events.emit('progress', PROGRESS);
+		});
+
+		it('dispatches event only for listeners for given event name', () => {
+			const spy1 = sinon.spy();
+			const spy2 = sinon.spy();
+
+			events.on('progress', spy1);
+			events.on('complete', spy2);
+
+			events.emit('progress', PROGRESS);
+			sinon.assert.calledWith(spy1, PROGRESS);
+			sinon.assert.notCalled(spy2);
 		});
 	})
 
 	describe('types', () => {
-
-
 		describe('progress', () => {
 			it('on', () => {
 				type Input = Parameters<typeof events.on<'progress'>>;
@@ -109,13 +122,13 @@ describe('Events', () => {
 		describe('abort', () => {
 			it('on', () => {
 				type Input = Parameters<typeof events.on<'abort'>>;
-				type Expected = ['abort', (...args: []) => unknown];
+				type Expected = ['abort', () => unknown];
 				assert<IsExact<Input, Expected>>(true);
 			});
 
 			it('off', () => {
 				type Input = Parameters<typeof events.off<'abort'>>;
-				type Expected = ['abort', (...args: []) => unknown];
+				type Expected = ['abort', () => unknown];
 				assert<IsExact<Input, Expected>>(true);
 			});
 

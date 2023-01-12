@@ -1,8 +1,11 @@
 type SomeListener = (...args: unknown[]) => unknown;
 
-export class Events<TEventsMap extends Record<string, unknown[]>> {
+export class Events<TEventsMap extends { [name: string]: unknown[] }> {
 	private listeners = new Map<string, Set<SomeListener>>()
 
+	/**
+	 * Registers listener for given event name
+	 */
 	on<TName extends keyof TEventsMap & string>(name: TName, listener: (...args: TEventsMap[TName]) => unknown): this {
 		let currentListeners = this.listeners.get(name);
 		if (!currentListeners) {
@@ -13,6 +16,9 @@ export class Events<TEventsMap extends Record<string, unknown[]>> {
 		return this;
 	}
 
+	/**
+	 * Removes given listener for given event name
+	 */
 	off<TName extends keyof TEventsMap & string>(name: TName, listener: (...args: TEventsMap[TName]) => unknown): this {
 		const currentListeners = this.listeners.get(name);
 		if (currentListeners) {
@@ -21,6 +27,9 @@ export class Events<TEventsMap extends Record<string, unknown[]>> {
 		return this;
 	}
 
+	/**
+	 * Emits an event
+	 */
 	emit<TName extends keyof TEventsMap & string>(name: TName, ...args: TEventsMap[TName]): this {
 		const listeners = this.listeners.get(name);
 		if (listeners) {
