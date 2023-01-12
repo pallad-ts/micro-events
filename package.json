@@ -32,6 +32,7 @@
   "homepage": "https://github.com/pallad-ts/micro-events#readme",
   "devDependencies": {
     "@pallad/scripts": "^3.0.2",
-    "conditional-type-checks": "^1.0.6"
+    "conditional-type-checks": "^1.0.6",
+    "sinon": "^14.0.1"
   }
 }
