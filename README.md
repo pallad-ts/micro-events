@@ -37,9 +37,14 @@ events.on('progress', (progress) => {
 	console.log('progress', progress);
 });
 
+events.once('progress', (progress) => {
+	console.log('progress once', progress);
+});
+
 events.emit('progress', 10);
 events.emit('progress', 100);
 // progress 10
+// progress once 10
 // progress 100
 ```
 

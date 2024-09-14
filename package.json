@@ -5,9 +5,9 @@
   "main": "compiled/index.js",
   "types": "compiled/index.d.ts",
   "scripts": {
-    "test": "pallad-scripts test",
-    "compile": "pallad-scripts compile",
-    "lint": "pallad-scripts lint",
+    "test": "jest",
+    "compile": "tsc -P tsconfig.build.json",
+    "lint": "eslint src/**/*.ts",
     "prepublishOnly": "npm run compile"
   },
   "repository": {
@@ -31,8 +31,10 @@
   },
   "homepage": "https://github.com/pallad-ts/micro-events#readme",
   "devDependencies": {
-    "@pallad/scripts": "^3.0.2",
+    "@pallad/scripts": "^4.2.1",
+    "@types/node": "^18",
+    "@types/sinon": "^17.0.3",
     "conditional-type-checks": "^1.0.6",
-    "sinon": "^14.0.1"
+    "sinon": "^19"
   }
 }

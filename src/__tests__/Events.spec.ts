@@ -1,4 +1,4 @@
-import {Events} from "@src/Events";
+import {Events} from "../Events";
 import {assert, IsExact} from "conditional-type-checks";
 import * as sinon from 'sinon';
 
@@ -32,6 +32,24 @@ describe('Events', () => {
 		});
 	});
 
+	describe('once', () => {
+		it('adds listener', () => {
+			const spy1 = sinon.spy();
+			const spy2 = sinon.spy();
+
+			events.once('progress', spy1);
+			events.once('progress', spy2);
+
+			events.emit('progress', PROGRESS);
+			events.emit('progress', PROGRESS);
+			events.emit('progress', PROGRESS);
+			events.emit('progress', PROGRESS);
+
+			sinon.assert.calledOnce(spy1);
+			sinon.assert.calledOnce(spy2);
+		})
+	});
+
 	describe('off', () => {
 		it('removes listener', () => {
 			const spy1 = sinon.spy();
@@ -46,6 +64,20 @@ describe('Events', () => {
 			sinon.assert.calledWith(spy1, PROGRESS);
 			sinon.assert.notCalled(spy2);
 		});
+
+		it('removes once listeners', () => {
+			const spy1 = sinon.spy();
+			const spy2 = sinon.spy();
+
+			events.once('progress', spy1);
+			events.once('progress', spy2);
+			events.off('progress', spy2);
+
+			events.emit('progress', PROGRESS);
+
+			sinon.assert.calledWith(spy1, PROGRESS);
+			sinon.assert.notCalled(spy2);
+		})
 	});
 
 	describe('emit', () => {
@@ -86,6 +118,12 @@ describe('Events', () => {
 				assert<IsExact<Input, Expected>>(true);
 			});
 
+			it('once', () => {
+				type Input = Parameters<typeof events.once<'progress'>>;
+				type Expected = ['progress', (...args: [number]) => unknown];
+				assert<IsExact<Input, Expected>>(true);
+			});
+
 			it('off', () => {
 				type Input = Parameters<typeof events.off<'progress'>>;
 				type Expected = ['progress', (...args: [number]) => unknown];
@@ -106,6 +144,12 @@ describe('Events', () => {
 				assert<IsExact<Input, Expected>>(true);
 			});
 
+			it('once', () => {
+				type Input = Parameters<typeof events.once<'complete'>>;
+				type Expected = ['complete', (...args: [Record<string, unknown>, number]) => unknown];
+				assert<IsExact<Input, Expected>>(true);
+			});
+
 			it('off', () => {
 				type Input = Parameters<typeof events.off<'complete'>>;
 				type Expected = ['complete', (...args: [Record<string, unknown>, number]) => unknown];
@@ -122,6 +166,12 @@ describe('Events', () => {
 		describe('abort', () => {
 			it('on', () => {
 				type Input = Parameters<typeof events.on<'abort'>>;
+				type Expected = ['abort', () => unknown];
+				assert<IsExact<Input, Expected>>(true);
+			});
+
+			it('once', () => {
+				type Input = Parameters<typeof events.once<'abort'>>;
 				type Expected = ['abort', () => unknown];
 				assert<IsExact<Input, Expected>>(true);
 			});
